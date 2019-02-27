@@ -2,7 +2,7 @@
 
 source /root/certbot.env
 
-if [ -d "/etc/letsencrypt/live/deyay.com" ]; then
+if [ -d "/etc/letsencrypt/live/"$DOMAIN ]; then
 	echo "INFO: Renewing certificate."
 	certbot renew -n $OPTIONS
 else
