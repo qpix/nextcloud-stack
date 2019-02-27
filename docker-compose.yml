@@ -1,0 +1,40 @@
+version: '3'
+services:
+  db:
+    image: mariadb
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    env_file:
+      - db.env
+
+  app:
+    image: nextcloud:fpm
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+    environment:
+      - MYSQL_HOST=db
+    env_file:
+      - db.env
+    depends_on:
+      - db
+
+  proxy:
+    build: ./proxy/
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - nginx:/etc/nginx/conf.d/
+      - letsencrypt:/etc/letsencrypt/
+      - nextcloud:/usr/share/nginx/html/:ro
+    depends_on:
+      - app
+
+volumes:
+  nginx:
+  letsencrypt:
+  nextcloud:
+  db:
