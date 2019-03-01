@@ -8,6 +8,10 @@ services:
     env_file:
       - db.env
 
+  redis:
+    image: redis
+    restart: always
+
   app:
     image: nextcloud:fpm
     restart: always
@@ -15,10 +19,12 @@ services:
       - nextcloud:/var/www/html
     environment:
       - MYSQL_HOST=db
+      - REDIS_HOST=redis
     env_file:
       - db.env
     depends_on:
       - db
+      - redis
 
   proxy:
     build: ./proxy/
